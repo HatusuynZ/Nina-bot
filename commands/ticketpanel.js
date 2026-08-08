@@ -5,12 +5,13 @@ export default {
   name: 'ticketpanel',
   aliases: ['painelticket'],
   category: 'Servidor',
-  description: 'posta o painel de abertura de tickets no canal atual',
+  description: 'Posta o painel de abertura de tickets no canal atual',
   usage: '!ticketpanel',
   permission: PermissionFlagsBits.ManageChannels,
 
-  async execute({ message }) {
-    await postTicketPanel(message.channel);
-    await message.delete().catch(() => {});
+  async execute(ctx) {
+    await postTicketPanel(ctx.channel);
+    await ctx.deleteInvocation();
+    if (ctx.isSlash) await ctx.replyPrivate('Painel postado.');
   },
 };

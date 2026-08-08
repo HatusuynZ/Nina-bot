@@ -10,41 +10,41 @@ export default {
   name: 'warn',
   aliases: ['avisar'],
   category: 'Moderação',
-  description: 'registra um aviso contra alguem',
+  description: 'Registra um aviso contra alguem',
   usage: '!warn @user [motivo]',
   permission: PermissionFlagsBits.KickMembers,
+  options: [
+    { name: 'user', type: 'user', description: 'Quem levou o aviso', required: true },
+    { name: 'motivo', type: 'string', description: 'Por que' },
+  ],
 
-  async execute({ message, args }) {
-    const target = message.mentions.members.first();
+  async execute(ctx) {
+    const target = await ctx.getMember('user');
     if (!target) {
-      await message.reply('Uso: `!warn @usuario [motivo]`');
+      await ctx.replyPrivate('Uso: `!warn @usuario [motivo]`');
       return;
     }
     if (target.user.bot) {
-      await message.reply('Nao da pra dar warn em bot.');
+      await ctx.replyPrivate('Nao da pra dar warn em bot.');
       return;
     }
-    if (target.id === message.author.id) {
-      await message.reply('Voce nao pode se avisar.');
+    if (target.id === ctx.author.id) {
+      await ctx.replyPrivate('Voce nao pode se avisar.');
       return;
     }
 
-    const reason = args.slice(1).join(' ') || 'Sem motivo informado';
-    const total = addWarn(message.guild.id, target.id, {
+    const reason = ctx.getString('motivo') || 'Sem motivo informado';
+    const total = addWarn(ctx.guild.id, target.id, {
       reason,
-      mod: message.author.tag,
+      mod: ctx.author.tag,
       date: new Date().toISOString(),
     });
 
-    await message.channel.send(
-      `**${target.user.tag}** levou um warn (total: ${total}). Motivo: ${reason}`
-    );
+    await ctx.reply(`**${target.user.tag}** levou um warn (total: ${total}). Motivo: ${reason}`);
 
     if (AUTO_BAN_AFTER > 0 && total >= AUTO_BAN_AFTER && target.bannable) {
       await target.ban({ reason: `Auto-ban: ${AUTO_BAN_AFTER} warns` });
-      await message.channel.send(
-        `**${target.user.tag}** atingiu ${AUTO_BAN_AFTER} warns e foi banido.`
-      );
+      await ctx.send(`**${target.user.tag}** atingiu ${AUTO_BAN_AFTER} warns e foi banido.`);
     }
   },
 };

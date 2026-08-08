@@ -7,29 +7,38 @@ export default {
   description: 'APAGA todos os canais e recria a estrutura do zero',
   usage: '!reset confirmar',
   permission: PermissionFlagsBits.ManageChannels,
+  options: [
+    {
+      name: 'confirmar',
+      type: 'string',
+      description: 'Escreva exatamente: confirmar',
+      required: true,
+    },
+  ],
 
-  async execute({ message, args }) {
-    const guild = message.guild;
+  async execute(ctx) {
+    const guild = ctx.guild;
     const me = await guild.members.fetchMe();
     if (!me.permissions.has(PermissionFlagsBits.ManageChannels)) {
-      await message.reply('Eu nao tenho a permissao **Gerenciar Canais**.');
+      await ctx.replyPrivate('Eu nao tenho a permissao **Gerenciar Canais**.');
       return;
     }
 
     // Trava de confirmacao: isso apaga mensagem de todo mundo, pra sempre.
-    if (args[0] !== 'confirmar') {
-      await message.reply(
+    if (ctx.getString('confirmar') !== 'confirmar') {
+      await ctx.replyPrivate(
         'ATENCAO: isso **apaga todos os canais** do servidor (e todas as mensagens deles) e recria a estrutura do zero. Nao da pra desfazer.\n' +
           'Se tem certeza: `!reset confirmar`'
       );
       return;
     }
 
-    await message.channel.send('Apagando canais e recriando a estrutura...');
+    await ctx.defer();
+    await ctx.reply('Apagando canais e recriando a estrutura...');
 
     for (const channel of [...guild.channels.cache.values()]) {
       try {
-        await channel.delete('Reset do servidor via !reset');
+        await channel.delete('Reset do servidor');
       } catch (err) {
         console.error(`[reset] nao consegui apagar "${channel.name}":`, err.message);
       }

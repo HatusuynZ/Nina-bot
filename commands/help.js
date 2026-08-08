@@ -1,22 +1,26 @@
 import { EmbedBuilder } from 'discord.js';
 
-// Ordem em que as categorias aparecem. Categoria nao listada vai pro fim.
+// Ordem das categorias no embed. Categoria fora da lista vai pro fim.
 const CATEGORY_ORDER = ['Moderação', 'Servidor', 'Geral'];
 
 export default {
   name: 'help',
   aliases: ['comandos', 'ajuda'],
   category: 'Geral',
-  description: 'mostra todos os comandos',
+  description: 'Mostra todos os comandos',
   usage: '!help [comando]',
   permission: null,
+  options: [{ name: 'comando', type: 'string', description: 'Detalhe de um comando so' }],
 
-  async execute({ message, args, commands, commandList, prefix }) {
-    // !help <comando> -> detalhe de um comando so
-    if (args[0]) {
-      const found = commands.get(args[0].toLowerCase());
+  async execute(ctx) {
+    const { commands, commandList, prefix } = ctx;
+    const wanted = ctx.getString('comando');
+
+    // detalhe de um comando
+    if (wanted) {
+      const found = commands.get(wanted.toLowerCase());
       if (!found) {
-        await message.reply(`Nao existe comando \`${args[0]}\`. Use \`${prefix}help\`.`);
+        await ctx.replyPrivate(`Nao existe comando \`${wanted}\`. Use \`${prefix}help\`.`);
         return;
       }
       const embed = new EmbedBuilder()
@@ -24,6 +28,15 @@ export default {
         .setTitle(`${prefix}${found.name}`)
         .setDescription(found.description ?? 'Sem descricao.')
         .addFields({ name: 'Como usar', value: `\`${found.usage ?? prefix + found.name}\`` });
+
+      if (found.options?.length) {
+        embed.addFields({
+          name: 'Argumentos',
+          value: found.options
+            .map((o) => `\`${o.name}\`${o.required ? ' (obrigatorio)' : ''} — ${o.description}`)
+            .join('\n'),
+        });
+      }
       if (found.aliases?.length) {
         embed.addFields({
           name: 'Tambem responde por',
@@ -33,12 +46,12 @@ export default {
       if (found.permission) {
         embed.setFooter({ text: 'Exige permissao de moderacao no Discord.' });
       }
-      await message.channel.send({ embeds: [embed] });
+      await ctx.reply({ embeds: [embed] });
       return;
     }
 
-    // Lista completa, agrupada por categoria. Monta sozinha a partir dos
-    // arquivos em commands/ — nao existe lista escrita na mao pra desatualizar.
+    // Lista completa. Monta a partir dos arquivos carregados — nao existe
+    // lista escrita na mao pra desatualizar.
     const byCategory = new Map();
     for (const command of commandList) {
       const category = command.category ?? 'Outros';
@@ -46,7 +59,7 @@ export default {
       byCategory.get(category).push(command);
     }
 
-    const sortedCategories = [...byCategory.keys()].sort((a, b) => {
+    const sorted = [...byCategory.keys()].sort((a, b) => {
       const ia = CATEGORY_ORDER.indexOf(a);
       const ib = CATEGORY_ORDER.indexOf(b);
       return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
@@ -55,9 +68,11 @@ export default {
     const embed = new EmbedBuilder()
       .setColor(0x5865f2)
       .setTitle('📖 Comandos da Nina')
-      .setDescription(`Prefixo: \`${prefix}\` · detalhe de um: \`${prefix}help <comando>\``);
+      .setDescription(
+        `Funciona com \`/\` ou com \`${prefix}\` · detalhe de um: \`${prefix}help <comando>\``
+      );
 
-    for (const category of sortedCategories) {
+    for (const category of sorted) {
       const lines = byCategory
         .get(category)
         .sort((a, b) => a.name.localeCompare(b.name))
@@ -67,6 +82,6 @@ export default {
     }
 
     embed.setFooter({ text: 'Comandos de moderacao exigem a permissao equivalente no Discord.' });
-    await message.channel.send({ embeds: [embed] });
+    await ctx.reply({ embeds: [embed] });
   },
 };

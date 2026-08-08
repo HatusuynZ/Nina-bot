@@ -14,7 +14,6 @@ const RULES_TEXT =
   'but if you cross the line, you already know what happens.';
 const RULES_IMAGE = 'rules.png'; // dentro de assets/
 const RULES_COLOR = 0x8b0000;
-// Pedacos de nome que identificam o canal de regras.
 const RULES_CHANNEL_KEYWORDS = ['rules', 'regras'];
 // ---------------
 
@@ -22,18 +21,18 @@ export default {
   name: 'rules',
   aliases: ['regras'],
   category: 'Servidor',
-  description: 'posta o quadro de regras no canal de regras',
+  description: 'Posta o quadro de regras no canal de regras',
   usage: '!rules',
   permission: PermissionFlagsBits.ManageMessages,
 
-  async execute({ message }) {
+  async execute(ctx) {
     const target =
-      message.guild.channels.cache.find(
+      ctx.guild.channels.cache.find(
         (c) =>
           c.isTextBased?.() &&
           !c.isThread?.() &&
           RULES_CHANNEL_KEYWORDS.some((k) => c.name.toLowerCase().includes(k))
-      ) ?? message.channel;
+      ) ?? ctx.channel;
 
     const embed = new EmbedBuilder()
       .setColor(RULES_COLOR)
@@ -49,13 +48,10 @@ export default {
 
     await target.send({ embeds: [embed], files });
 
-    if (target.id !== message.channel.id) {
-      await message.reply(`Regras postadas em ${target}.`);
-    }
-    if (files.length === 0) {
-      await message.channel.send(
-        `(Sem imagem: coloque \`${RULES_IMAGE}\` na pasta \`assets\` pra ela aparecer.)`
-      );
-    }
+    const aviso =
+      files.length === 0
+        ? `Regras postadas em ${target}. (Sem imagem: falta \`${RULES_IMAGE}\` na pasta \`assets\`.)`
+        : `Regras postadas em ${target}.`;
+    await ctx.replyPrivate(aviso);
   },
 };

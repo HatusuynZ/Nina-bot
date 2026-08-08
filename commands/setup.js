@@ -4,19 +4,22 @@ import { SERVER_TEMPLATE, createChannel } from '../lib/serverTemplate.js';
 export default {
   name: 'setup',
   category: 'Servidor',
-  description: 'cria a estrutura de canais (pula o que ja existe, nao apaga nada)',
+  description: 'Cria a estrutura de canais (pula o que ja existe, nao apaga nada)',
   usage: '!setup',
   permission: PermissionFlagsBits.ManageChannels,
 
-  async execute({ message }) {
-    const guild = message.guild;
+  async execute(ctx) {
+    const guild = ctx.guild;
     const me = await guild.members.fetchMe();
     if (!me.permissions.has(PermissionFlagsBits.ManageChannels)) {
-      await message.reply('Eu nao tenho a permissao **Gerenciar Canais**.');
+      await ctx.replyPrivate('Eu nao tenho a permissao **Gerenciar Canais**.');
       return;
     }
 
-    const status = await message.channel.send('Criando a estrutura do servidor...');
+    // criar dezenas de canais estoura os 3s de resposta do slash
+    await ctx.defer();
+    await ctx.reply('Criando a estrutura do servidor...');
+
     let created = 0;
     let skipped = 0;
 
@@ -47,6 +50,6 @@ export default {
       }
     }
 
-    await status.edit(`Pronto. Criei ${created} item(ns) e pulei ${skipped} que ja existiam.`);
+    await ctx.reply(`Pronto. Criei ${created} item(ns) e pulei ${skipped} que ja existiam.`);
   },
 };

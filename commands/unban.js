@@ -4,25 +4,28 @@ export default {
   name: 'unban',
   aliases: ['desbanir'],
   category: 'Moderação',
-  description: 'desbane alguem pelo ID',
+  description: 'Desbane alguem pelo ID',
   usage: '!unban <id>',
   permission: PermissionFlagsBits.BanMembers,
+  options: [
+    { name: 'id', type: 'string', description: 'ID do usuario banido', required: true },
+  ],
 
-  async execute({ message, args }) {
+  async execute(ctx) {
     // Quem esta banido nao esta no servidor, entao nao da pra marcar: vai por ID.
-    const userId = (args[0] ?? '').replace(/[<@!>]/g, '');
+    const userId = (ctx.getString('id') ?? '').replace(/[<@!>]/g, '');
     if (!/^\d{17,20}$/.test(userId)) {
-      await message.reply(
-        'Uso: `!unban <ID do usuario>`. Pegue o ID em Config. do Servidor > Banimentos.'
+      await ctx.replyPrivate(
+        'Uso: `!unban <ID>`. Pegue o ID em Config. do Servidor > Banimentos.'
       );
       return;
     }
 
     try {
-      await message.guild.bans.remove(userId);
-      await message.channel.send(`Desbanido: \`${userId}\`.`);
+      await ctx.guild.bans.remove(userId);
+      await ctx.reply(`Desbanido: \`${userId}\`.`);
     } catch {
-      await message.reply('Falhou. Confere se o ID esta certo e se essa pessoa estava banida.');
+      await ctx.replyPrivate('Falhou. Confere se o ID esta certo e se a pessoa estava banida.');
     }
   },
 };

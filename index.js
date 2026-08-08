@@ -15,6 +15,7 @@ import {
   stopWatching,
   handleAutoReply,
 } from './lib/autoReply.js';
+import { initLogger } from './lib/logger.js';
 import { registerTicketHandlers } from './tickets.js';
 import { registerWelcome } from './welcome.js';
 
@@ -80,6 +81,7 @@ client.on('interactionCreate', async (interaction) => {
   await runCommand(command, contextFromInteraction(interaction, command, extras));
 });
 
+initLogger(client);
 registerTicketHandlers(client);
 registerWelcome(client);
 

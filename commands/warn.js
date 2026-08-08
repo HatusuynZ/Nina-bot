@@ -1,5 +1,6 @@
 import { PermissionFlagsBits } from 'discord.js';
 import { addWarn } from '../lib/warns.js';
+import { logModeration } from '../lib/logger.js';
 
 // ---- knobs ----
 // Ban automatico ao atingir X warns. 0 = desligado.
@@ -41,6 +42,14 @@ export default {
     });
 
     await ctx.reply(`**${target.user.tag}** levou um warn (total: ${total}). Motivo: ${reason}`);
+
+    await logModeration(ctx.guild, {
+      action: '⚠️ Warn',
+      target: `${target.user.tag} (${target.id})`,
+      moderator: ctx.author.tag,
+      reason,
+      extra: [{ name: 'Total de warns', value: `${total}`, inline: true }],
+    });
 
     if (AUTO_BAN_AFTER > 0 && total >= AUTO_BAN_AFTER && target.bannable) {
       await target.ban({ reason: `Auto-ban: ${AUTO_BAN_AFTER} warns` });

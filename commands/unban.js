@@ -1,4 +1,5 @@
 import { PermissionFlagsBits } from 'discord.js';
+import { logModeration } from '../lib/logger.js';
 
 export default {
   name: 'unban',
@@ -24,6 +25,12 @@ export default {
     try {
       await ctx.guild.bans.remove(userId);
       await ctx.reply(`Desbanido: \`${userId}\`.`);
+
+      await logModeration(ctx.guild, {
+        action: '🕊️ Desbanimento',
+        target: userId,
+        moderator: ctx.author.tag,
+      });
     } catch {
       await ctx.replyPrivate('Falhou. Confere se o ID esta certo e se a pessoa estava banida.');
     }

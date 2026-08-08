@@ -1,4 +1,5 @@
 import { PermissionFlagsBits } from 'discord.js';
+import { logModeration } from '../lib/logger.js';
 
 export default {
   name: 'clear',
@@ -37,6 +38,15 @@ export default {
         const info = await ctx.channel.send(`Apaguei ${count} mensagem(ns).`);
         setTimeout(() => info.delete().catch(() => {}), 4000);
       }
+
+      await logModeration(ctx.guild, {
+        action: '🧹 Limpeza de mensagens',
+        moderator: ctx.author.tag,
+        extra: [
+          { name: 'Canal', value: `${ctx.channel}`, inline: true },
+          { name: 'Apagadas', value: `${count}`, inline: true },
+        ],
+      });
     } catch {
       await ctx.replyPrivate(
         'Falhou. Mensagens com mais de 14 dias nao podem ser apagadas em massa pelo Discord.'

@@ -1,4 +1,5 @@
 import { PermissionFlagsBits } from 'discord.js';
+import { logModeration } from '../lib/logger.js';
 
 export default {
   name: 'ban',
@@ -32,5 +33,12 @@ export default {
     const reason = ctx.getString('motivo') || 'Sem motivo informado';
     await target.ban({ reason });
     await ctx.reply(`Banido: **${target.user.tag}**. Motivo: ${reason}`);
+
+    await logModeration(ctx.guild, {
+      action: '🔨 Banimento',
+      target: `${target.user.tag} (${target.id})`,
+      moderator: ctx.author.tag,
+      reason,
+    });
   },
 };

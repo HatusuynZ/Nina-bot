@@ -8,7 +8,10 @@ const LEAVE_CHANNEL_KEYWORDS = null;
 // Liga/desliga a mensagem de quando alguem sai.
 const SEND_LEAVE_MESSAGE = true;
 // Cargo dado automaticamente a quem entra. '' desliga o autorole.
-const AUTOROLE_NAME = 'Membro';
+// DESLIGADO de proposito: quem da o cargo de acesso agora e a VERIFICACAO
+// (lib/verify.js). Se voltar a ligar aqui, a pessoa entra ja com acesso e a
+// verificacao perde o sentido.
+const AUTOROLE_NAME = '';
 // Canais apontados pro novato. Se nao existirem, o campo some do embed.
 const RULES_CHANNEL_KEYWORDS = ['rules', 'regras'];
 const TUTORIAL_CHANNEL_KEYWORDS = ['tutorial', 'como-jogar'];

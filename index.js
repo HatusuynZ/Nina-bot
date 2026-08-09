@@ -11,6 +11,7 @@ import {
 import { contextFromInteraction } from './lib/context.js';
 import { initLogger } from './lib/logger.js';
 import { registerBotGuard } from './lib/botGuard.js';
+import { registerVerifyHandlers } from './lib/verify.js';
 import { initDb } from './lib/db.js';
 import { handleXp, startLeveling, stopLeveling } from './lib/leveling.js';
 import { registerTicketHandlers } from './tickets.js';
@@ -67,6 +68,7 @@ client.on('interactionCreate', async (interaction) => {
 
 initLogger(client);
 registerBotGuard(client);
+registerVerifyHandlers(client);
 registerTicketHandlers(client);
 registerWelcome(client);
 

@@ -19,53 +19,16 @@ const RULES_CHANNEL_KEYWORDS = ['rules', 'regras'];
 // interpretacao. Ordem = da mais geral pra mais especifica.
 const RULES = [
   {
-    title: 'Freedom, with one limit',
+    title: 'No NSFW or gore',
     text:
-      "You're free to do whatever you want, as long as it doesn't take away someone " +
-      "else's freedom. I'm not here to tell you what you can or can't do — but if you " +
-      'cross the line, you already know what happens.',
+      'No sexual content, nudity, or gore. Dark aesthetic is welcome here — ' +
+      'real nudity and real blood are not. Any channel, any DM through here.',
   },
   {
-    title: 'No NSFW',
-    text: 'No sexual content, nudity, or suggestive material. Any channel, any DM through here.',
-  },
-  {
-    title: 'No gore',
+    title: "Don't cross the line",
     text:
-      'No real violence, injury, death, or shock content. Dark aesthetic is welcome here. ' +
-      'Real blood is not.',
-  },
-  {
-    title: 'No hate',
-    text:
-      'Racism, homophobia, transphobia, or any attack on who someone is. ' +
-      'This one skips the warning.',
-  },
-  {
-    title: 'No harassment',
-    text:
-      'No threats, stalking, or pile-ons. Lost a fight in game? It stays in game. ' +
-      "Don't drag it here.",
-  },
-  {
-    title: 'Keep private things private',
-    text:
-      "Nobody's address, real name, face, or socials — including your own. " +
-      'What you post here, you post forever.',
-  },
-  {
-    title: 'No advertising',
-    text: "Don't come here to farm members for your server. Ask staff first if it's a partnership.",
-  },
-  {
-    title: '16+',
-    text: 'This is a 16+ community. Under 16 gets removed. No exceptions, no arguing your case.',
-  },
-  {
-    title: 'Stay inside the lines',
-    text:
-      "This server follows Discord's rules. Nothing that crosses what a community server " +
-      'allows — no exploits, no illegal content, no getting us shut down. Simple.',
+      "Follow Discord's rules. No hate, no harassment, no doxxing, nothing illegal, " +
+      'nothing that gets us shut down. Staff decides where the line is. 🖤',
   },
 ];
 

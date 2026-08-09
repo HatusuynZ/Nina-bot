@@ -51,6 +51,16 @@ const TICKET_TYPES = [
       'Tell me who it was and what happened. Send proof — screenshots, ' +
       'message links, anything. This stays private between you and staff.',
   },
+  {
+    id: 'creator',
+    label: 'Content Creator',
+    emoji: '🎬',
+    description: 'Apply for the Content Creator role',
+    intro:
+      'Check `/requirements` first. Then send the link to your channel and which ' +
+      'platform you qualify on. Make sure the channel is **linked to your Discord ' +
+      'profile** — the staff will review it here.',
+  },
 ];
 // ---------------
 

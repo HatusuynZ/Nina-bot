@@ -12,8 +12,9 @@ export default {
     await sendRpAction(ctx, {
       category: 'kiss',
       color: 0xff6b9d,
-      line: (a, b) => `**${a}** kissed **${b}** 💋`,
-      selfLine: (a) => `**${a}** blew a kiss to no one in particular... 💋`,
+      line: (a, b) => `${a} kissed ${b} 💋`,
+      selfLine: (a) => `${a} blew a kiss to no one in particular... 💋`,
+      botLine: () => "I never got to that part... 🖤",
     });
   },
 };

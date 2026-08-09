@@ -12,8 +12,9 @@ export default {
     await sendRpAction(ctx, {
       category: 'hug',
       color: 0xffb37b,
-      line: (a, b) => `**${a}** hugged **${b}** 🤗`,
-      selfLine: (a) => `**${a}** hugged themselves. Someone give them a real one. 🤗`,
+      line: (a, b) => `${a} hugged ${b} 🤗`,
+      selfLine: (a) => `${a} hugged themselves. Someone give them a real one. 🤗`,
+      botLine: (a) => `Come here, ${a}. I've got you. 🖤`,
     });
   },
 };

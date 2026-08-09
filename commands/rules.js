@@ -8,6 +8,9 @@ const ASSETS_DIR = join(__dirname, '..', 'assets');
 
 // ---- knobs ----
 const RULES_TITLE = '📜 RULES';
+// Frase de abertura, acima da lista numerada.
+const RULES_INTRO =
+  "This is a 16+ community. No NSFW, no gore, nothing that crosses Discord's line. Keep it that way.";
 const RULES_IMAGE = 'rules.png'; // dentro de assets/
 const RULES_COLOR = 0x8b0000;
 const RULES_CHANNEL_KEYWORDS = ['rules', 'regras'];
@@ -90,7 +93,10 @@ export default {
     const embed = new EmbedBuilder()
       .setColor(RULES_COLOR)
       .setTitle(RULES_TITLE)
-      .setDescription(RULES.map((r, i) => `**${i + 1}. ${r.title}**\n${r.text}`).join('\n\n'))
+      .setDescription(
+        `${RULES_INTRO}\n\n` +
+          RULES.map((r, i) => `**${i + 1}. ${r.title}**\n${r.text}`).join('\n\n')
+      )
       .setFooter({ text: RULES_FOOTER });
 
     const files = [];

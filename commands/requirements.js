@@ -56,31 +56,26 @@ export default {
   permission: null,
 
   async execute(ctx) {
-    const spacer = { name: '​', value: '​', inline: false };
-
     const embed = new EmbedBuilder()
       .setColor(EMBED_COLOR)
       .setTitle('🎬 Content Creator Requirements')
       .setDescription(
         `Meet the requirements for **one** platform below and you can get the ` +
-          `**${CREATOR_ROLE}** role.\n​`
+          `**${CREATOR_ROLE}** role.`
       )
       .addFields({
         name: '📋 Before you apply',
-        value: `${BASE_REQUIREMENTS.map((r) => `• ${r}`).join('\n')}\n​`,
+        value: BASE_REQUIREMENTS.map((r) => `• ${r}`).join('\n'),
       });
 
-    // Plataformas em grade de 3 por linha. Preenche a linha com espacos vazios
-    // pra nao ficar torto, e da um respiro no fim de cada campo.
-    PLATFORMS.forEach((p) => {
+    // Plataformas em grade de 3 por linha (inline). Sem preenchimento vazio:
+    // o Discord ja alinha, e campo vazio so cria buraco.
+    for (const p of PLATFORMS) {
       embed.addFields({
         name: `${p.emoji} ${p.name}`,
-        value: `${p.reqs.map((r) => `• ${r}`).join('\n')}\n​`,
+        value: p.reqs.map((r) => `• ${r}`).join('\n'),
         inline: true,
       });
-    });
-    while (embed.data.fields.filter((f) => f.inline).length % 3 !== 0) {
-      embed.addFields({ name: '​', value: '​', inline: true });
     }
 
     // Pra onde aplicar: aponta pro canal de tickets se ele existir.
@@ -96,8 +91,7 @@ export default {
         `The staff reviews it there.`;
 
     embed.addFields(
-      spacer,
-      { name: '✨ Alternative path', value: `${ALTERNATIVE}\n​` },
+      { name: '✨ Alternative path', value: ALTERNATIVE },
       { name: '📨 How to apply', value: applyLine }
     );
 

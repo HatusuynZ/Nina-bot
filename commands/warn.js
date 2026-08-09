@@ -1,11 +1,35 @@
 import { PermissionFlagsBits } from 'discord.js';
 import { addWarn } from '../lib/warns.js';
 import { logModeration } from '../lib/logger.js';
+import { parseDuration, formatDuration } from '../lib/duration.js';
 
 // ---- knobs ----
-// Auto-ban when reaching X warns. 0 = off.
-const AUTO_BAN_AFTER = 0;
+// Auto-punicao escalonada. Ao ATINGIR exatamente X warns, aplica a acao.
+// action: 'mute' (precisa de duration), 'kick' ou 'ban'. Ordene por warns.
+const WARN_ACTIONS = [
+  { warns: 3, action: 'mute', duration: '1h' },
+  { warns: 5, action: 'ban' },
+];
 // ---------------
+
+async function applyAction(ctx, target, rule) {
+  const reason = `Reached ${rule.warns} warns`;
+
+  if (rule.action === 'mute' && target.moderatable) {
+    const ms = parseDuration(rule.duration ?? '1h') ?? 3_600_000;
+    await target.timeout(ms, reason);
+    return `muted for ${formatDuration(ms)}`;
+  }
+  if (rule.action === 'kick' && target.kickable) {
+    await target.kick(reason);
+    return 'kicked';
+  }
+  if (rule.action === 'ban' && target.bannable) {
+    await target.ban({ reason });
+    return 'banned';
+  }
+  return null; // sem permissao/hierarquia pra aplicar
+}
 
 export default {
   name: 'warn',
@@ -41,7 +65,6 @@ export default {
     });
 
     await ctx.reply(`**${target.user.tag}** was warned (total: ${total}). Reason: ${reason}`);
-
     await logModeration(ctx.guild, {
       action: '⚠️ Warn',
       target: `${target.user.tag} (${target.id})`,
@@ -50,9 +73,25 @@ export default {
       extra: [{ name: 'Total warns', value: `${total}`, inline: true }],
     });
 
-    if (AUTO_BAN_AFTER > 0 && total >= AUTO_BAN_AFTER && target.bannable) {
-      await target.ban({ reason: `Auto-ban: ${AUTO_BAN_AFTER} warns` });
-      await ctx.send(`**${target.user.tag}** hit ${AUTO_BAN_AFTER} warns and was banned.`);
+    // auto-punicao ao bater um limiar
+    const rule = WARN_ACTIONS.find((a) => a.warns === total);
+    if (!rule) return;
+
+    const outcome = await applyAction(ctx, target, rule);
+    if (outcome) {
+      await ctx.send(`**${target.user.tag}** hit ${total} warns and was **${outcome}**.`);
+      await logModeration(ctx.guild, {
+        action: '⚖️ Auto-punishment',
+        target: `${target.user.tag} (${target.id})`,
+        moderator: 'Nina (auto)',
+        reason: `Reached ${total} warns`,
+        extra: [{ name: 'Action', value: outcome, inline: true }],
+      });
+    } else {
+      await ctx.send(
+        `**${target.user.tag}** hit ${total} warns, but I couldn't ${rule.action} them ` +
+          `(role too high or missing permission).`
+      );
     }
   },
 };

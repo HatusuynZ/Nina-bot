@@ -4,7 +4,7 @@ export default {
   name: 'kiss',
   category: 'Roleplay',
   description: 'Kiss another member',
-  usage: '!kiss @user',
+  usage: '/kiss @user',
   permission: null, // anyone can use
   options: [{ name: 'user', type: 'user', description: 'Who to kiss', required: true }],
 

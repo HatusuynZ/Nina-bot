@@ -5,7 +5,7 @@ export default {
   name: 'setup',
   category: 'Server',
   description: 'Create the channel structure (skips what exists, deletes nothing)',
-  usage: '!setup',
+  usage: '/setup',
   permission: PermissionFlagsBits.ManageChannels,
 
   async execute(ctx) {

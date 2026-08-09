@@ -11,7 +11,7 @@ export default {
   aliases: ['pic'],
   category: 'General',
   description: 'Send an image from the images folder',
-  usage: '!photo [name]',
+  usage: '/photo [name]',
   permission: null,
   options: [{ name: 'name', type: 'string', description: 'File name (without extension)' }],
 

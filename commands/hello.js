@@ -3,7 +3,7 @@ export default {
   aliases: ['hi'],
   category: 'General',
   description: 'Nina greets you',
-  usage: '!hello',
+  usage: '/hello',
   permission: null,
 
   async execute(ctx) {

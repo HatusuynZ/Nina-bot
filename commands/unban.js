@@ -5,7 +5,7 @@ export default {
   name: 'unban',
   category: 'Moderation',
   description: 'Unban someone by their ID',
-  usage: '!unban <id>',
+  usage: '/unban <id>',
   permission: PermissionFlagsBits.BanMembers,
   options: [{ name: 'id', type: 'string', description: 'ID of the banned user', required: true }],
 
@@ -13,7 +13,7 @@ export default {
     // A banned user isn't in the server, so you can't mention them: use the ID.
     const userId = (ctx.getString('id') ?? '').replace(/[<@!>]/g, '');
     if (!/^\d{17,20}$/.test(userId)) {
-      await ctx.replyPrivate('Usage: `!unban <ID>`. Get the ID in Server Settings > Bans.');
+      await ctx.replyPrivate('Usage: `/unban <ID>`. Get the ID in Server Settings > Bans.');
       return;
     }
 

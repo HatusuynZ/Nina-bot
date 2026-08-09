@@ -4,7 +4,7 @@ export default {
   name: 'slap',
   category: 'Roleplay',
   description: 'Slap another member',
-  usage: '!slap @user',
+  usage: '/slap @user',
   permission: null, // anyone can use
   options: [{ name: 'user', type: 'user', description: 'Who to slap', required: true }],
 

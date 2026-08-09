@@ -5,7 +5,7 @@ export default {
   name: 'warns',
   category: 'Moderation',
   description: "List someone's warns (no argument = your own)",
-  usage: '!warns [@user]',
+  usage: '/warns [@user]',
   permission: null,
   options: [{ name: 'user', type: 'user', description: 'Whose warns' }],
 

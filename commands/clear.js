@@ -6,7 +6,7 @@ export default {
   aliases: ['purge'],
   category: 'Moderation',
   description: 'Delete the last N messages in this channel',
-  usage: '!clear <1-100>',
+  usage: '/clear <1-100>',
   permission: PermissionFlagsBits.ManageMessages,
   options: [
     {
@@ -20,7 +20,7 @@ export default {
   async execute(ctx) {
     const amount = ctx.getInteger('amount');
     if (amount === null || amount < 1 || amount > 100) {
-      await ctx.replyPrivate('Usage: `!clear <number from 1 to 100>`');
+      await ctx.replyPrivate('Usage: `/clear <number from 1 to 100>`');
       return;
     }
 

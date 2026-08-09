@@ -11,7 +11,7 @@ export default {
   name: 'warn',
   category: 'Moderation',
   description: 'Warn a member',
-  usage: '!warn @user [reason]',
+  usage: '/warn @user [reason]',
   permission: PermissionFlagsBits.KickMembers,
   options: [
     { name: 'user', type: 'user', description: 'Who to warn', required: true },
@@ -21,7 +21,7 @@ export default {
   async execute(ctx) {
     const target = await ctx.getMember('user');
     if (!target) {
-      await ctx.replyPrivate('Usage: `!warn @user [reason]`');
+      await ctx.replyPrivate('Usage: `/warn @user [reason]`');
       return;
     }
     if (target.user.bot) {

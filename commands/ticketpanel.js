@@ -5,7 +5,7 @@ export default {
   name: 'ticketpanel',
   category: 'Server',
   description: 'Post the ticket panel in this channel',
-  usage: '!ticketpanel',
+  usage: '/ticketpanel',
   permission: PermissionFlagsBits.ManageChannels,
 
   async execute(ctx) {

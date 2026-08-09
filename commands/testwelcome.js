@@ -5,7 +5,7 @@ export default {
   name: 'testwelcome',
   category: 'Server',
   description: 'Test the welcome message in this channel',
-  usage: '!testwelcome [@user]',
+  usage: '/testwelcome [@user]',
   permission: PermissionFlagsBits.ManageChannels,
   options: [{ name: 'user', type: 'user', description: 'Pretend this person joined' }],
 

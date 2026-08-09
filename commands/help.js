@@ -8,7 +8,7 @@ export default {
   aliases: ['commands'],
   category: 'General',
   description: 'Show all commands',
-  usage: '!help [command]',
+  usage: '/help [command]',
   permission: null,
   options: [{ name: 'command', type: 'string', description: 'Details for one command' }],
 

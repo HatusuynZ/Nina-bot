@@ -2,7 +2,7 @@ export default {
   name: 'ping',
   category: 'General',
   description: "Check if Nina is online and show latency",
-  usage: '!ping',
+  usage: '/ping',
   permission: null,
 
   async execute(ctx) {

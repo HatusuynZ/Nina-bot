@@ -6,14 +6,14 @@ export default {
   aliases: ['untimeout'],
   category: 'Moderation',
   description: 'Remove a member timeout early',
-  usage: '!unmute @user',
+  usage: '/unmute @user',
   permission: PermissionFlagsBits.ModerateMembers,
   options: [{ name: 'user', type: 'user', description: 'Who to unmute', required: true }],
 
   async execute(ctx) {
     const target = await ctx.getMember('user');
     if (!target) {
-      await ctx.replyPrivate('Usage: `!unmute @user`');
+      await ctx.replyPrivate('Usage: `/unmute @user`');
       return;
     }
     if (!target.isCommunicationDisabled()) {

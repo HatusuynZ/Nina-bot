@@ -5,7 +5,7 @@ export default {
   name: 'reset',
   category: 'Server',
   description: 'DELETE every channel and rebuild the structure from scratch',
-  usage: '!reset confirm',
+  usage: '/reset confirm',
   permission: PermissionFlagsBits.ManageChannels,
   options: [
     { name: 'confirm', type: 'string', description: 'Type exactly: confirm', required: true },
@@ -24,7 +24,7 @@ export default {
       await ctx.replyPrivate(
         'WARNING: this **deletes every channel** (and all their messages) and rebuilds the ' +
           "structure from scratch. It can't be undone.\n" +
-          'If you are sure: `!reset confirm`'
+          'If you are sure: `/reset confirm`'
       );
       return;
     }

@@ -20,7 +20,7 @@ export default {
   name: 'rules',
   category: 'Server',
   description: 'Post the rules board in the rules channel',
-  usage: '!rules',
+  usage: '/rules',
   permission: PermissionFlagsBits.ManageMessages,
 
   async execute(ctx) {

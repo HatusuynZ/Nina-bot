@@ -11,7 +11,7 @@ export default {
   aliases: ['timeout'],
   category: 'Moderation',
   description: 'Timeout a member (mute) for a while',
-  usage: '!mute @user [10m|1h|2d] [reason]',
+  usage: '/mute @user [10m|1h|2d] [reason]',
   permission: PermissionFlagsBits.ModerateMembers,
   options: [
     { name: 'user', type: 'user', description: 'Who to mute', required: true },
@@ -22,7 +22,7 @@ export default {
   async execute(ctx) {
     const target = await ctx.getMember('user');
     if (!target) {
-      await ctx.replyPrivate('Usage: `!mute @user [10m|1h|2d] [reason]`');
+      await ctx.replyPrivate('Usage: `/mute @user [10m|1h|2d] [reason]`');
       return;
     }
     if (target.id === ctx.author.id) {

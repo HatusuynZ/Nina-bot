@@ -8,16 +8,19 @@ import {
   registerSlashCommands,
   runCommand,
 } from './lib/commandLoader.js';
-import { contextFromMessage, contextFromInteraction } from './lib/context.js';
+import { contextFromInteraction } from './lib/context.js';
 import { initLogger } from './lib/logger.js';
+import { initDb } from './lib/db.js';
+import { handleXp, startLeveling, stopLeveling } from './lib/leveling.js';
 import { registerTicketHandlers } from './tickets.js';
 import { registerWelcome } from './welcome.js';
 
 // ---- knobs ----
-const PREFIX = '!';
 // Server where slash commands show up instantly. Empty = publish globally
 // (correct in production, but takes up to 1h to propagate).
 const DEV_GUILD_ID = process.env.DEV_GUILD_ID ?? '';
+// Kept only for the /help display; there is no text-prefix dispatch anymore.
+const DISPLAY_PREFIX = '/';
 // ---------------
 
 // Guard: a stray error must not take the whole bot down.
@@ -32,35 +35,26 @@ const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.MessageContent, // logger needs content of deleted/edited msgs
     GatewayIntentBits.GuildMembers, // needs SERVER MEMBERS INTENT in the portal
   ],
 });
 
-const extras = { client, commands, commandList, prefix: PREFIX };
+const extras = { client, commands, commandList, prefix: DISPLAY_PREFIX };
 
 client.once('clientReady', async () => {
   console.log(`Bot online as ${client.user.tag}`);
   await registerSlashCommands(client, DEV_GUILD_ID);
 });
 
-// --- text commands (!ban) ---
-client.on('messageCreate', async (message) => {
+// Messages are ONLY for XP now — commands come through slash.
+client.on('messageCreate', (message) => {
   if (message.author.bot) return;
   if (!message.guild) return;
-  if (!message.content.startsWith(PREFIX)) return;
-
-  const args = message.content.slice(PREFIX.length).trim().split(/\s+/);
-  const name = args.shift()?.toLowerCase();
-  if (!name) return;
-
-  const command = commands.get(name);
-  if (!command) return; // unknown: stay silent, don't spam the chat
-
-  await runCommand(command, contextFromMessage(message, args, command, extras));
+  handleXp(message).catch((err) => console.error('[xp]', err.message));
 });
 
-// --- slash commands (/ban) ---
+// Slash commands (/ban, /rank, ...)
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isChatInputCommand()) return; // buttons/menus handled by tickets.js
 
@@ -74,6 +68,14 @@ initLogger(client);
 registerTicketHandlers(client);
 registerWelcome(client);
 
+// Flush level XP and close things cleanly when Discloud restarts the app.
+async function shutdown() {
+  await stopLeveling();
+  process.exit(0);
+}
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
+
 const token = process.env.DISCORD_TOKEN;
 if (!token || token === 'COLE_O_TOKEN_AQUI') {
   console.error(
@@ -85,6 +87,8 @@ if (!token || token === 'COLE_O_TOKEN_AQUI') {
 }
 
 await loadCommands();
+await initDb(); // no-op if MONGO_URL isn't set; leveling just stays off
+startLeveling();
 
 // A login error is fatal: it must kill the process, not get swallowed by the
 // guard above. If it stays alive, the app looks "running" with a dead bot —

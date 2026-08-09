@@ -4,7 +4,7 @@ export default {
   name: 'hug',
   category: 'Roleplay',
   description: 'Hug another member',
-  usage: '!hug @user',
+  usage: '/hug @user',
   permission: null, // anyone can use
   options: [{ name: 'user', type: 'user', description: 'Who to hug', required: true }],
 

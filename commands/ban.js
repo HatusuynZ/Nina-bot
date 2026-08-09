@@ -5,7 +5,7 @@ export default {
   name: 'ban',
   category: 'Moderation',
   description: 'Ban a member from the server',
-  usage: '!ban @user [reason]',
+  usage: '/ban @user [reason]',
   permission: PermissionFlagsBits.BanMembers,
   options: [
     { name: 'user', type: 'user', description: 'Who to ban', required: true },
@@ -15,7 +15,7 @@ export default {
   async execute(ctx) {
     const target = await ctx.getMember('user');
     if (!target) {
-      await ctx.replyPrivate('Usage: `!ban @user [reason]`');
+      await ctx.replyPrivate('Usage: `/ban @user [reason]`');
       return;
     }
     if (target.id === ctx.author.id) {

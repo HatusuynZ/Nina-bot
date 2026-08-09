@@ -17,28 +17,28 @@ const RULES_CHANNEL_KEYWORDS = ['rules', 'regras'];
 const TUTORIAL_CHANNEL_KEYWORDS = ['tutorial', 'como-jogar'];
 
 const WELCOME_COLOR = 0x1a0b12; // quase preto, com um toque de vinho
-const WELCOME_TITLE = '🖤 Mais um pra minha coleção';
+const WELCOME_TITLE = '🖤 Another one for my collection';
 
 // Frase sorteada a cada entrada. Adicione a vontade.
 const WELCOME_LINES = [
-  'Eu estava esperando. Sempre estou.',
-  'Bem-vindo. Agora eu sei o seu nome — e eu não esqueço nomes.',
-  'Você chegou. Não precisa se preocupar com mais nada: eu cuido de você aqui.',
-  'A rua é fria e alguém sempre está de olho. Hoje, sou eu. Sorte a sua.',
-  'Fica. Todo mundo que entra promete voltar, e todo mundo volta mesmo.',
-  'Anotei a hora exata em que você entrou. É bonito ter alguém novo pra observar.',
-  'Sente-se. Respira. Você é meu agora — no bom sentido, claro. 🖤',
-  'Eu não durmo, então pode aparecer a qualquer hora. Eu vou estar acordada.',
-  'Bem-vindo à noite. Não solta a minha mão que ninguém encosta em você.',
-  'Que bom que você veio por conta própria. Fica muito mais fácil assim.',
+  'I was waiting. I always am.',
+  "Welcome. I know your name now — and I don't forget names.",
+  "You're here. Don't worry about anything else: I'll take care of you.",
+  "The streets are cold and someone is always watching. Tonight, it's me. Lucky you.",
+  'Stay. Everyone who walks in promises to come back, and they all do.',
+  'I wrote down the exact second you arrived. It\'s nice having someone new to watch.',
+  "Sit. Breathe. You're mine now — in the good way, of course. 🖤",
+  "I don't sleep, so drop by any time. I'll be awake.",
+  'Welcome to the night. Keep hold of my hand and no one touches you.',
+  'Good that you came on your own. Makes it so much easier.',
 ];
 
 // Mensagem de saida (uma linha, sem embed).
 const LEAVE_LINES = [
-  '{user} foi embora. Eu não gosto quando isso acontece. 🖤',
-  '{user} saiu. Eu vou guardar o lugar dele. Do jeito que estava.',
-  'Perdi {user} de vista. Sempre volta alguém... ou eu vou atrás.',
-  '{user} fechou a porta. Eu deixei destrancada, por via das dúvidas.',
+  "{user} left. I don't like it when that happens. 🖤",
+  "{user} is gone. I'll keep their seat. Exactly how it was.",
+  'Lost sight of {user}. Someone always comes back... or I go get them.',
+  '{user} closed the door. I left it unlocked, just in case.',
 ];
 // ---------------
 
@@ -118,8 +118,8 @@ function buildWelcomeEmbed(member) {
 
   if (typeof count === 'number') {
     embed.addFields({
-      name: 'Contagem',
-      value: `Você é o membro **#${count}**. Eu conto um por um.`,
+      name: 'Headcount',
+      value: `You're member **#${count}**. I count every single one.`,
     });
   }
 
@@ -127,13 +127,13 @@ function buildWelcomeEmbed(member) {
   const rules = findTextChannel(guild, RULES_CHANNEL_KEYWORDS);
   const tutorial = findTextChannel(guild, TUTORIAL_CHANNEL_KEYWORDS);
   const pointers = [];
-  if (rules) pointers.push(`📜 Leia <#${rules.id}> — eu levo isso a sério.`);
-  if (tutorial) pointers.push(`📖 Comece por <#${tutorial.id}>.`);
+  if (rules) pointers.push(`📜 Read <#${rules.id}> — I take it seriously.`);
+  if (tutorial) pointers.push(`📖 Start with <#${tutorial.id}>.`);
   if (pointers.length > 0) {
-    embed.addFields({ name: 'Antes de qualquer coisa', value: pointers.join('\n') });
+    embed.addFields({ name: 'Before anything else', value: pointers.join('\n') });
   }
 
-  embed.setFooter({ text: `${guild?.name ?? 'Aqui'} • eu não durmo` }).setTimestamp();
+  embed.setFooter({ text: `${guild?.name ?? 'Here'} • I don't sleep` }).setTimestamp();
 
   return embed;
 }

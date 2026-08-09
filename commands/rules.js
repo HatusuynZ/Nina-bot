@@ -8,32 +8,12 @@ const ASSETS_DIR = join(__dirname, '..', 'assets');
 
 // ---- knobs ----
 const RULES_TITLE = '📜 RULES';
-// Frase de abertura, acima da lista numerada.
-const RULES_INTRO =
+// A regra unica do servidor. Edite so aqui.
+const RULES_TEXT =
   "This is a 16+ community. No NSFW, no gore, nothing that crosses Discord's line. Keep it that way.";
 const RULES_IMAGE = 'rules.png'; // dentro de assets/
 const RULES_COLOR = 0x8b0000;
 const RULES_CHANNEL_KEYWORDS = ['rules', 'regras'];
-
-// A regra 1 e o principio; as outras sao onde a linha esta, sem espaco pra
-// interpretacao. Ordem = da mais geral pra mais especifica.
-const RULES = [
-  {
-    title: 'No NSFW or gore',
-    text:
-      'No sexual content, nudity, or gore. Dark aesthetic is welcome here — ' +
-      'real nudity and real blood are not. Any channel, any DM through here.',
-  },
-  {
-    title: "Don't cross the line",
-    text:
-      "Follow Discord's rules. No hate, no harassment, no doxxing, nothing illegal, " +
-      'nothing that gets us shut down. Staff decides where the line is. 🖤',
-  },
-];
-
-const RULES_FOOTER =
-  "Staff decision is final. You just read these — \"I didn't know\" won't work on me. 🖤";
 // ---------------
 
 export default {
@@ -56,11 +36,7 @@ export default {
     const embed = new EmbedBuilder()
       .setColor(RULES_COLOR)
       .setTitle(RULES_TITLE)
-      .setDescription(
-        `${RULES_INTRO}\n\n` +
-          RULES.map((r, i) => `**${i + 1}. ${r.title}**\n${r.text}`).join('\n\n')
-      )
-      .setFooter({ text: RULES_FOOTER });
+      .setDescription(RULES_TEXT);
 
     const files = [];
     const imgPath = join(ASSETS_DIR, RULES_IMAGE);

@@ -18,9 +18,8 @@ const RULES_CHANNEL_KEYWORDS = ['rules', 'regras'];
 
 export default {
   name: 'rules',
-  aliases: ['regras'],
-  category: 'Servidor',
-  description: 'Posta o quadro de regras no canal de regras',
+  category: 'Server',
+  description: 'Post the rules board in the rules channel',
   usage: '!rules',
   permission: PermissionFlagsBits.ManageMessages,
 
@@ -47,10 +46,10 @@ export default {
 
     await target.send({ embeds: [embed], files });
 
-    const aviso =
+    const note =
       files.length === 0
-        ? `Regras postadas em ${target}. (Sem imagem: falta \`${RULES_IMAGE}\` em \`assets\`.)`
-        : `Regras postadas em ${target}.`;
-    await ctx.replyPrivate(aviso);
+        ? `Rules posted in ${target}. (No image: \`${RULES_IMAGE}\` missing from \`assets\`.)`
+        : `Rules posted in ${target}.`;
+    await ctx.replyPrivate(note);
   },
 };

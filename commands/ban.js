@@ -3,39 +3,38 @@ import { logModeration } from '../lib/logger.js';
 
 export default {
   name: 'ban',
-  aliases: ['banir'],
-  category: 'Moderação',
-  description: 'Bane um membro do servidor',
-  usage: '!ban @user [motivo]',
+  category: 'Moderation',
+  description: 'Ban a member from the server',
+  usage: '!ban @user [reason]',
   permission: PermissionFlagsBits.BanMembers,
   options: [
-    { name: 'user', type: 'user', description: 'Quem vai ser banido', required: true },
-    { name: 'motivo', type: 'string', description: 'Por que' },
+    { name: 'user', type: 'user', description: 'Who to ban', required: true },
+    { name: 'reason', type: 'string', description: 'Why' },
   ],
 
   async execute(ctx) {
     const target = await ctx.getMember('user');
     if (!target) {
-      await ctx.replyPrivate('Uso: `!ban @usuario [motivo]`');
+      await ctx.replyPrivate('Usage: `!ban @user [reason]`');
       return;
     }
     if (target.id === ctx.author.id) {
-      await ctx.replyPrivate('Voce nao pode se banir.');
+      await ctx.replyPrivate("You can't ban yourself.");
       return;
     }
     if (!target.bannable) {
       await ctx.replyPrivate(
-        'Nao consigo banir: o cargo dele e maior ou igual ao meu, ou ele e o dono do servidor.'
+        "I can't ban this user: their role is higher than mine, or they own the server."
       );
       return;
     }
 
-    const reason = ctx.getString('motivo') || 'Sem motivo informado';
+    const reason = ctx.getString('reason') || 'No reason given';
     await target.ban({ reason });
-    await ctx.reply(`Banido: **${target.user.tag}**. Motivo: ${reason}`);
+    await ctx.reply(`Banned: **${target.user.tag}**. Reason: ${reason}`);
 
     await logModeration(ctx.guild, {
-      action: '🔨 Banimento',
+      action: '🔨 Ban',
       target: `${target.user.tag} (${target.id})`,
       moderator: ctx.author.tag,
       reason,

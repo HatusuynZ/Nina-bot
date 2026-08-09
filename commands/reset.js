@@ -3,44 +3,40 @@ import { SERVER_TEMPLATE, createChannel } from '../lib/serverTemplate.js';
 
 export default {
   name: 'reset',
-  category: 'Servidor',
-  description: 'APAGA todos os canais e recria a estrutura do zero',
-  usage: '!reset confirmar',
+  category: 'Server',
+  description: 'DELETE every channel and rebuild the structure from scratch',
+  usage: '!reset confirm',
   permission: PermissionFlagsBits.ManageChannels,
   options: [
-    {
-      name: 'confirmar',
-      type: 'string',
-      description: 'Escreva exatamente: confirmar',
-      required: true,
-    },
+    { name: 'confirm', type: 'string', description: 'Type exactly: confirm', required: true },
   ],
 
   async execute(ctx) {
     const guild = ctx.guild;
     const me = await guild.members.fetchMe();
     if (!me.permissions.has(PermissionFlagsBits.ManageChannels)) {
-      await ctx.replyPrivate('Eu nao tenho a permissao **Gerenciar Canais**.');
+      await ctx.replyPrivate("I don't have the **Manage Channels** permission.");
       return;
     }
 
-    // Trava de confirmacao: isso apaga mensagem de todo mundo, pra sempre.
-    if (ctx.getString('confirmar') !== 'confirmar') {
+    // Confirmation guard: this deletes everyone's messages, forever.
+    if (ctx.getString('confirm') !== 'confirm') {
       await ctx.replyPrivate(
-        'ATENCAO: isso **apaga todos os canais** do servidor (e todas as mensagens deles) e recria a estrutura do zero. Nao da pra desfazer.\n' +
-          'Se tem certeza: `!reset confirmar`'
+        'WARNING: this **deletes every channel** (and all their messages) and rebuilds the ' +
+          "structure from scratch. It can't be undone.\n" +
+          'If you are sure: `!reset confirm`'
       );
       return;
     }
 
     await ctx.defer();
-    await ctx.reply('Apagando canais e recriando a estrutura...');
+    await ctx.reply('Deleting channels and rebuilding the structure...');
 
     for (const channel of [...guild.channels.cache.values()]) {
       try {
-        await channel.delete('Reset do servidor');
+        await channel.delete('Server reset');
       } catch (err) {
-        console.error(`[reset] nao consegui apagar "${channel.name}":`, err.message);
+        console.error(`[reset] couldn't delete "${channel.name}":`, err.message);
       }
     }
 
@@ -56,6 +52,6 @@ export default {
       }
     }
 
-    await firstText?.send('Estrutura recriada do zero.');
+    await firstText?.send('Structure rebuilt from scratch.');
   },
 };

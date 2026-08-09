@@ -3,36 +3,31 @@ import { logModeration } from '../lib/logger.js';
 
 export default {
   name: 'unban',
-  aliases: ['desbanir'],
-  category: 'Moderação',
-  description: 'Desbane alguem pelo ID',
+  category: 'Moderation',
+  description: 'Unban someone by their ID',
   usage: '!unban <id>',
   permission: PermissionFlagsBits.BanMembers,
-  options: [
-    { name: 'id', type: 'string', description: 'ID do usuario banido', required: true },
-  ],
+  options: [{ name: 'id', type: 'string', description: 'ID of the banned user', required: true }],
 
   async execute(ctx) {
-    // Quem esta banido nao esta no servidor, entao nao da pra marcar: vai por ID.
+    // A banned user isn't in the server, so you can't mention them: use the ID.
     const userId = (ctx.getString('id') ?? '').replace(/[<@!>]/g, '');
     if (!/^\d{17,20}$/.test(userId)) {
-      await ctx.replyPrivate(
-        'Uso: `!unban <ID>`. Pegue o ID em Config. do Servidor > Banimentos.'
-      );
+      await ctx.replyPrivate('Usage: `!unban <ID>`. Get the ID in Server Settings > Bans.');
       return;
     }
 
     try {
       await ctx.guild.bans.remove(userId);
-      await ctx.reply(`Desbanido: \`${userId}\`.`);
+      await ctx.reply(`Unbanned: \`${userId}\`.`);
 
       await logModeration(ctx.guild, {
-        action: '🕊️ Desbanimento',
+        action: '🕊️ Unban',
         target: userId,
         moderator: ctx.author.tag,
       });
     } catch {
-      await ctx.replyPrivate('Falhou. Confere se o ID esta certo e se a pessoa estava banida.');
+      await ctx.replyPrivate("Failed. Check the ID is right and that they were actually banned.");
     }
   },
 };

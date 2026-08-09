@@ -6,15 +6,16 @@ a cada push nesta branch.
 ## Estrutura
 
 ```
-index.js              liga o bot e despacha comandos. Nada mais.
+index.js              liga o bot e despacha comandos (texto e slash). Nada mais.
 commands/<nome>.js    um comando por arquivo
-lib/commandLoader.js  acha os comandos e checa permissao
-lib/autoReply.js      respostas automaticas + paciencia da Nina
+lib/commandLoader.js  acha os comandos, publica os slash e checa permissao
+lib/context.js        normaliza mensagem e interacao (um comando serve os dois)
+lib/logger.js         log de moderacao e de mensagem no canal "logs"
 lib/warns.js          armazenamento dos warns
 lib/serverTemplate.js molde de canais do !setup e !reset
+lib/rpAction.js       acoes de roleplay (kiss/hug/slap) com gif
 tickets.js            sistema de tickets
 welcome.js            boas-vindas + autorole
-responses.json        gatilhos e respostas (recarrega sozinho, sem restart)
 ```
 
 ## Criar um comando

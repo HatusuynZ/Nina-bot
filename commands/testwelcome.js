@@ -3,22 +3,21 @@ import { sendWelcome } from '../welcome.js';
 
 export default {
   name: 'testwelcome',
-  aliases: ['testarboasvindas'],
-  category: 'Servidor',
-  description: 'Testa a mensagem de boas-vindas no canal atual',
+  category: 'Server',
+  description: 'Test the welcome message in this channel',
   usage: '!testwelcome [@user]',
   permission: PermissionFlagsBits.ManageChannels,
-  options: [{ name: 'user', type: 'user', description: 'Fingir que essa pessoa entrou' }],
+  options: [{ name: 'user', type: 'user', description: 'Pretend this person joined' }],
 
   async execute(ctx) {
     const target = (await ctx.getMember('user')) ?? ctx.member;
-    // manda no canal atual de proposito, pra nao sujar o de boas-vindas real
+    // posts in the current channel on purpose, so the real welcome channel stays clean
     const sent = await sendWelcome(target, ctx.channel);
 
     if (!sent) {
-      await ctx.replyPrivate('Nao consegui postar. Olha o console pra ver o motivo.');
+      await ctx.replyPrivate("Couldn't post. Check the console for the reason.");
     } else if (ctx.isSlash) {
-      await ctx.replyPrivate('Postei o teste acima.');
+      await ctx.replyPrivate('Posted the test above.');
     }
   },
 };

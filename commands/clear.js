@@ -3,53 +3,53 @@ import { logModeration } from '../lib/logger.js';
 
 export default {
   name: 'clear',
-  aliases: ['limpar', 'purge'],
-  category: 'Moderação',
-  description: 'Apaga as ultimas N mensagens do canal',
+  aliases: ['purge'],
+  category: 'Moderation',
+  description: 'Delete the last N messages in this channel',
   usage: '!clear <1-100>',
   permission: PermissionFlagsBits.ManageMessages,
   options: [
     {
-      name: 'quantidade',
+      name: 'amount',
       type: 'integer',
-      description: 'Quantas mensagens apagar (1 a 100)',
+      description: 'How many messages to delete (1 to 100)',
       required: true,
     },
   ],
 
   async execute(ctx) {
-    const amount = ctx.getInteger('quantidade');
+    const amount = ctx.getInteger('amount');
     if (amount === null || amount < 1 || amount > 100) {
-      await ctx.replyPrivate('Uso: `!clear <numero de 1 a 100>`');
+      await ctx.replyPrivate('Usage: `!clear <number from 1 to 100>`');
       return;
     }
 
     try {
-      // No modo texto, +1 pra incluir o proprio comando (no slash nao ha o que
-      // incluir). O 'true' pula mensagens com mais de 14 dias, que a API do
-      // Discord se recusa a apagar em massa.
+      // In text mode, +1 to include the command itself (in slash there's
+      // nothing to include). The 'true' skips messages older than 14 days,
+      // which Discord's API refuses to bulk-delete.
       const extra = ctx.isSlash ? 0 : 1;
       const deleted = await ctx.channel.bulkDelete(amount + extra, true);
       const count = deleted.size - extra;
 
       if (ctx.isSlash) {
-        await ctx.replyPrivate(`Apaguei ${count} mensagem(ns).`);
+        await ctx.replyPrivate(`Deleted ${count} message(s).`);
       } else {
-        const info = await ctx.channel.send(`Apaguei ${count} mensagem(ns).`);
+        const info = await ctx.channel.send(`Deleted ${count} message(s).`);
         setTimeout(() => info.delete().catch(() => {}), 4000);
       }
 
       await logModeration(ctx.guild, {
-        action: '🧹 Limpeza de mensagens',
+        action: '🧹 Message purge',
         moderator: ctx.author.tag,
         extra: [
-          { name: 'Canal', value: `${ctx.channel}`, inline: true },
-          { name: 'Apagadas', value: `${count}`, inline: true },
+          { name: 'Channel', value: `${ctx.channel}`, inline: true },
+          { name: 'Deleted', value: `${count}`, inline: true },
         ],
       });
     } catch {
       await ctx.replyPrivate(
-        'Falhou. Mensagens com mais de 14 dias nao podem ser apagadas em massa pelo Discord.'
+        "Failed. Messages older than 14 days can't be bulk-deleted by Discord."
       );
     }
   },

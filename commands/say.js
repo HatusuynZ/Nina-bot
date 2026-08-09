@@ -2,26 +2,25 @@ import { PermissionFlagsBits } from 'discord.js';
 
 export default {
   name: 'say',
-  aliases: ['falar'],
-  category: 'Geral',
-  description: 'A Nina fala por voce',
-  usage: '!say <texto>',
+  category: 'General',
+  description: 'Nina speaks for you',
+  usage: '!say <text>',
   permission: PermissionFlagsBits.ManageMessages,
-  options: [{ name: 'texto', type: 'string', description: 'O que ela vai dizer', required: true }],
+  options: [{ name: 'text', type: 'string', description: 'What she says', required: true }],
 
   async execute(ctx) {
-    const text = ctx.getString('texto');
+    const text = ctx.getString('text');
     if (!text) {
-      await ctx.replyPrivate('Uso: `!say <texto>`');
+      await ctx.replyPrivate('Usage: `!say <text>`');
       return;
     }
 
-    // parse: [] impede que "!say @everyone" marque o servidor inteiro
+    // parse: [] stops "!say @everyone" from actually pinging everyone
     const payload = { content: text, allowedMentions: { parse: [] } };
 
     if (ctx.isSlash) {
-      // confirma so pra quem chamou, pra parecer que a Nina falou sozinha
-      await ctx.replyPrivate('Falei.');
+      // confirm only to the caller, so it looks like Nina spoke on her own
+      await ctx.replyPrivate('Done.');
       await ctx.channel.send(payload);
     } else {
       await ctx.deleteInvocation();

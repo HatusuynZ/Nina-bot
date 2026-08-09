@@ -7,34 +7,34 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const IMAGES_DIR = join(__dirname, '..', 'images');
 
 export default {
-  name: 'foto',
-  aliases: ['imagem'],
-  category: 'Geral',
-  description: 'Manda uma imagem da pasta images',
-  usage: '!foto [nome]',
+  name: 'photo',
+  aliases: ['pic'],
+  category: 'General',
+  description: 'Send an image from the images folder',
+  usage: '!photo [name]',
   permission: null,
-  options: [{ name: 'nome', type: 'string', description: 'Nome do arquivo (sem extensao)' }],
+  options: [{ name: 'name', type: 'string', description: 'File name (without extension)' }],
 
   async execute(ctx) {
     let files;
     try {
       files = readdirSync(IMAGES_DIR).filter((f) => /\.(png|jpe?g|gif|webp)$/i.test(f));
     } catch {
-      await ctx.replyPrivate('A pasta `images` nao existe.');
+      await ctx.replyPrivate("The `images` folder doesn't exist.");
       return;
     }
 
     if (files.length === 0) {
-      await ctx.replyPrivate('A pasta `images` esta vazia.');
+      await ctx.replyPrivate('The `images` folder is empty.');
       return;
     }
 
-    const requested = (ctx.getString('nome') ?? '').toLowerCase();
+    const requested = (ctx.getString('name') ?? '').toLowerCase();
     let chosen;
     if (requested) {
       chosen = files.find((f) => f.toLowerCase().startsWith(requested));
       if (!chosen) {
-        await ctx.replyPrivate(`Nao achei imagem chamada "${requested}".`);
+        await ctx.replyPrivate(`No image named "${requested}".`);
         return;
       }
     } else {

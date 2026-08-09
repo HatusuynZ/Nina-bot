@@ -9,29 +9,23 @@ import {
   runCommand,
 } from './lib/commandLoader.js';
 import { contextFromMessage, contextFromInteraction } from './lib/context.js';
-import {
-  loadResponses,
-  watchResponses,
-  stopWatching,
-  handleAutoReply,
-} from './lib/autoReply.js';
 import { initLogger } from './lib/logger.js';
 import { registerTicketHandlers } from './tickets.js';
 import { registerWelcome } from './welcome.js';
 
 // ---- knobs ----
 const PREFIX = '!';
-// Servidor onde os slash commands aparecem na hora. Vazio = publica global
-// (correto em producao, mas leva ate 1h pra propagar).
+// Server where slash commands show up instantly. Empty = publish globally
+// (correct in production, but takes up to 1h to propagate).
 const DEV_GUILD_ID = process.env.DEV_GUILD_ID ?? '';
 // ---------------
 
-// Blindagem: um erro solto nao pode derrubar o bot inteiro.
+// Guard: a stray error must not take the whole bot down.
 process.on('unhandledRejection', (reason) => {
-  console.error('[guard] promise rejeitada sem tratamento:', reason);
+  console.error('[guard] unhandled promise rejection:', reason);
 });
 process.on('uncaughtException', (err) => {
-  console.error('[guard] excecao nao capturada:', err);
+  console.error('[guard] uncaught exception:', err);
 });
 
 const client = new Client({
@@ -39,41 +33,36 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers, // exige SERVER MEMBERS INTENT no portal
+    GatewayIntentBits.GuildMembers, // needs SERVER MEMBERS INTENT in the portal
   ],
 });
 
 const extras = { client, commands, commandList, prefix: PREFIX };
 
 client.once('clientReady', async () => {
-  console.log(`Bot online como ${client.user.tag}`);
+  console.log(`Bot online as ${client.user.tag}`);
   await registerSlashCommands(client, DEV_GUILD_ID);
 });
 
-// --- comandos por texto (!ban) ---
+// --- text commands (!ban) ---
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
   if (!message.guild) return;
-
-  // Sem prefixo e conversa: a Nina decide se responde (e se tem paciencia).
-  if (!message.content.startsWith(PREFIX)) {
-    handleAutoReply(message);
-    return;
-  }
+  if (!message.content.startsWith(PREFIX)) return;
 
   const args = message.content.slice(PREFIX.length).trim().split(/\s+/);
   const name = args.shift()?.toLowerCase();
   if (!name) return;
 
   const command = commands.get(name);
-  if (!command) return; // desconhecido: silencio, nao poluir o chat
+  if (!command) return; // unknown: stay silent, don't spam the chat
 
   await runCommand(command, contextFromMessage(message, args, command, extras));
 });
 
-// --- comandos por slash (/ban) ---
+// --- slash commands (/ban) ---
 client.on('interactionCreate', async (interaction) => {
-  if (!interaction.isChatInputCommand()) return; // botao/menu: quem trata e o tickets.js
+  if (!interaction.isChatInputCommand()) return; // buttons/menus handled by tickets.js
 
   const command = commands.get(interaction.commandName);
   if (!command) return;
@@ -88,25 +77,22 @@ registerWelcome(client);
 const token = process.env.DISCORD_TOKEN;
 if (!token || token === 'COLE_O_TOKEN_AQUI') {
   console.error(
-    'ERRO: DISCORD_TOKEN nao configurado.\n' +
-      '  - Na Discloud: painel da aplicacao > Variaveis > DISCORD_TOKEN > salvar > REINICIAR.\n' +
-      '  - No PC local: coloque DISCORD_TOKEN=<token> no arquivo .env.'
+    'ERROR: DISCORD_TOKEN not set.\n' +
+      '  - On Discloud: app panel > Variables > DISCORD_TOKEN > save > RESTART.\n' +
+      '  - Local: put DISCORD_TOKEN=<token> in the .env file.'
   );
   process.exit(1);
 }
 
-loadResponses();
-watchResponses();
 await loadCommands();
 
-// Erro no login e fatal: precisa matar o processo, e nao ser engolido pela
-// blindagem la em cima. Se ficar vivo, a aplicacao parece "rodando" com o bot
-// morto — e o AUTORESTART nunca entra.
+// A login error is fatal: it must kill the process, not get swallowed by the
+// guard above. If it stays alive, the app looks "running" with a dead bot —
+// and AUTORESTART never kicks in.
 try {
   await client.login(token);
 } catch (err) {
-  console.error('ERRO FATAL: nao consegui logar no Discord:', err.message);
-  stopWatching();
+  console.error('FATAL: could not log in to Discord:', err.message);
   await client.destroy().catch(() => {});
   process.exit(1);
 }

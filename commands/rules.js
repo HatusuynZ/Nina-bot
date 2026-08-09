@@ -10,7 +10,7 @@ const ASSETS_DIR = join(__dirname, '..', 'assets');
 const RULES_TITLE = '📜 RULES';
 // A regra unica do servidor. Edite so aqui.
 const RULES_TEXT =
-  "This is a 16+ community. No NSFW, no gore, nothing that crosses Discord's line. Keep it that way.";
+  "1. This is a 16+ community. No NSFW, no gore, nothing that crosses Discord's line. Keep it that way.";
 const RULES_IMAGE = 'rules.png'; // dentro de assets/
 const RULES_COLOR = 0x8b0000;
 const RULES_CHANNEL_KEYWORDS = ['rules', 'regras'];

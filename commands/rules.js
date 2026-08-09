@@ -55,8 +55,14 @@ const RULES = [
     text: "Don't come here to farm members for your server. Ask staff first if it's a partnership.",
   },
   {
-    title: '13+',
-    text: "Discord's rule, not mine. Underage accounts get removed.",
+    title: '16+',
+    text: 'This is a 16+ community. Under 16 gets removed. No exceptions, no arguing your case.',
+  },
+  {
+    title: 'Stay inside the lines',
+    text:
+      "This server follows Discord's rules. Nothing that crosses what a community server " +
+      'allows — no exploits, no illegal content, no getting us shut down. Simple.',
   },
 ];
 

@@ -56,12 +56,22 @@ export default {
   permission: null,
 
   async execute(ctx) {
+    // Acha o cargo pra marcar com a cor dele. Se CREATOR_ROLE ja for uma
+    // mencao (<@&id>), usa direto; senao procura pelo nome.
+    let roleMention = CREATOR_ROLE;
+    if (!/^<@&\d+>$/.test(CREATOR_ROLE)) {
+      const role = ctx.guild.roles.cache.find(
+        (r) => r.name.toLowerCase() === CREATOR_ROLE.toLowerCase()
+      );
+      roleMention = role ? `<@&${role.id}>` : `**${CREATOR_ROLE}**`;
+    }
+
     const embed = new EmbedBuilder()
       .setColor(EMBED_COLOR)
       .setTitle('🎬 Content Creator Requirements')
       .setDescription(
-        `Meet the requirements for **one** platform below and you can get the ` +
-          `**${CREATOR_ROLE}** role.`
+        `# ${roleMention}\n` +
+          `Meet the requirements for **one** platform below and this **ROLE** is yours.`
       )
       .addFields({
         name: '📋 Before you apply',
@@ -97,6 +107,7 @@ export default {
 
     embed.setFooter({ text: 'Numbers must be real. Botted stats get you denied. 🖤' });
 
-    await ctx.reply({ embeds: [embed] });
+    // parse: [] mostra o cargo com a cor, mas NAO pinga ninguem
+    await ctx.reply({ embeds: [embed], allowedMentions: { parse: [] } });
   },
 };

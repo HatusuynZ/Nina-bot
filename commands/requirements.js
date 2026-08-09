@@ -3,8 +3,10 @@ import { EmbedBuilder } from 'discord.js';
 // ---- knobs (afine os valores aqui) ----
 const GAME_NAME = 'the game'; // troque pelo nome publico do jogo
 const CREATOR_ROLE = 'Content Creator'; // nome (ou @mencao) do cargo dado
-const REVIEWER = 'the staff'; // pra quem mandar o link (ex.: '@kaiserflows')
 const EMBED_COLOR = 0x8b0000;
+// Canal onde fica o painel de tickets (busca por nome). Se achar, o "How to
+// apply" aponta pra la. Se nao achar, cai num texto generico.
+const TICKETS_CHANNEL_KEYWORDS = ['ticket'];
 
 // Precisa bater os requisitos de UMA plataforma. Edite a vontade.
 const PLATFORMS = [
@@ -54,34 +56,49 @@ export default {
   permission: null,
 
   async execute(ctx) {
+    const spacer = { name: '​', value: '​', inline: false };
+
     const embed = new EmbedBuilder()
       .setColor(EMBED_COLOR)
       .setTitle('🎬 Content Creator Requirements')
       .setDescription(
         `Meet the requirements for **one** platform below and you can get the ` +
-          `**${CREATOR_ROLE}** role.`
+          `**${CREATOR_ROLE}** role.\n​`
       )
       .addFields({
         name: '📋 Before you apply',
-        value: BASE_REQUIREMENTS.map((r) => `• ${r}`).join('\n'),
+        value: `${BASE_REQUIREMENTS.map((r) => `• ${r}`).join('\n')}\n​`,
       });
 
-    for (const p of PLATFORMS) {
+    // Plataformas em grade de 3 por linha. Preenche a linha com espacos vazios
+    // pra nao ficar torto, e da um respiro no fim de cada campo.
+    PLATFORMS.forEach((p) => {
       embed.addFields({
         name: `${p.emoji} ${p.name}`,
-        value: p.reqs.map((r) => `• ${r}`).join('\n'),
+        value: `${p.reqs.map((r) => `• ${r}`).join('\n')}\n​`,
         inline: true,
       });
+    });
+    while (embed.data.fields.filter((f) => f.inline).length % 3 !== 0) {
+      embed.addFields({ name: '​', value: '​', inline: true });
     }
 
+    // Pra onde aplicar: aponta pro canal de tickets se ele existir.
+    const ticketsChannel = ctx.guild.channels.cache.find(
+      (c) =>
+        c.isTextBased?.() &&
+        TICKETS_CHANNEL_KEYWORDS.some((k) => c.name.toLowerCase().includes(k))
+    );
+    const applyLine = ticketsChannel
+      ? `Open a **Content Creator** ticket in ${ticketsChannel} and send the link ` +
+        `to your channel. The staff reviews it there.`
+      : `Open a **Content Creator** ticket and send the link to your channel. ` +
+        `The staff reviews it there.`;
+
     embed.addFields(
-      { name: '✨ Alternative path', value: ALTERNATIVE },
-      {
-        name: '📨 How to apply',
-        value:
-          `Send a link to the channel that meets the requirements to ${REVIEWER} ` +
-          `and wait for the review.`,
-      }
+      spacer,
+      { name: '✨ Alternative path', value: `${ALTERNATIVE}\n​` },
+      { name: '📨 How to apply', value: applyLine }
     );
 
     embed.setFooter({ text: 'Numbers must be real. Botted stats get you denied. 🖤' });

@@ -1,7 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 
 // Category order in the embed. Anything not listed goes last.
-const CATEGORY_ORDER = ['Moderation', 'Server', 'Roleplay', 'General'];
+const CATEGORY_ORDER = ['Moderation', 'Server', 'Roleplay', 'Info', 'General'];
 
 export default {
   name: 'help',

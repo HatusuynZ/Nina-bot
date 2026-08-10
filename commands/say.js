@@ -19,7 +19,7 @@ export default {
     const payload = { content: text, allowedMentions: { parse: [] } };
 
     if (ctx.isSlash) {
-      // confirm only to the caller, so it looks like Nina spoke on her own
+      // confirm only to the caller, so it looks like Skull spoke on his own
       await ctx.replyPrivate('Done.');
       await ctx.channel.send(payload);
     } else {

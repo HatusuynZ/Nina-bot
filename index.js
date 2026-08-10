@@ -12,8 +12,7 @@ import { contextFromInteraction } from './lib/context.js';
 import { initLogger } from './lib/logger.js';
 import { registerBotGuard } from './lib/botGuard.js';
 import { registerVerifyHandlers } from './lib/verify.js';
-import { initDb } from './lib/db.js';
-import { handleXp, startLeveling, stopLeveling } from './lib/leveling.js';
+import { handleSkullChat } from './lib/skullChat.js';
 import { registerTicketHandlers } from './tickets.js';
 import { registerWelcome } from './welcome.js';
 
@@ -37,7 +36,7 @@ const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent, // logger needs content of deleted/edited msgs
+    GatewayIntentBits.MessageContent, // logger + skull chat need message content
     GatewayIntentBits.GuildMembers, // needs SERVER MEMBERS INTENT in the portal
   ],
 });
@@ -49,16 +48,16 @@ client.once('clientReady', async () => {
   await registerSlashCommands(client, DEV_GUILD_ID);
 });
 
-// Messages are ONLY for XP now — commands come through slash.
+// Plain messages: only thing they do is feed Skull's chat (mention his name).
 client.on('messageCreate', (message) => {
   if (message.author.bot) return;
   if (!message.guild) return;
-  handleXp(message).catch((err) => console.error('[xp]', err.message));
+  handleSkullChat(message);
 });
 
-// Slash commands (/ban, /rank, ...)
+// Slash commands (/ban, /kick, ...)
 client.on('interactionCreate', async (interaction) => {
-  if (!interaction.isChatInputCommand()) return; // buttons/menus handled by tickets.js
+  if (!interaction.isChatInputCommand()) return; // buttons/menus handled elsewhere
 
   const command = commands.get(interaction.commandName);
   if (!command) return;
@@ -72,14 +71,6 @@ registerVerifyHandlers(client);
 registerTicketHandlers(client);
 registerWelcome(client);
 
-// Flush level XP and close things cleanly when Discloud restarts the app.
-async function shutdown() {
-  await stopLeveling();
-  process.exit(0);
-}
-process.on('SIGTERM', shutdown);
-process.on('SIGINT', shutdown);
-
 const token = process.env.DISCORD_TOKEN;
 if (!token || token === 'COLE_O_TOKEN_AQUI') {
   console.error(
@@ -91,8 +82,6 @@ if (!token || token === 'COLE_O_TOKEN_AQUI') {
 }
 
 await loadCommands();
-await initDb(); // no-op if MONGO_URL isn't set; leveling just stays off
-startLeveling();
 
 // A login error is fatal: it must kill the process, not get swallowed by the
 // guard above. If it stays alive, the app looks "running" with a dead bot —

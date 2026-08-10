@@ -1,7 +1,7 @@
 export default {
   name: 'ping',
   category: 'General',
-  description: "Check if Nina is online and show latency",
+  description: 'Check if Skull is online and show latency',
   usage: '/ping',
   permission: null,
 

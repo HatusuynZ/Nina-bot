@@ -14,7 +14,7 @@ export default {
       color: 0xff6b9d,
       line: (a, b) => `${a} kissed ${b} 💋`,
       selfLine: (a) => `${a} blew a kiss to no one in particular... 💋`,
-      botLine: () => "I never got to that part... 🖤",
+      botLine: () => "I don't do that. Keep it moving.",
     });
   },
 };

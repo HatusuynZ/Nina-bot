@@ -83,7 +83,7 @@ export default {
       await logModeration(ctx.guild, {
         action: '⚖️ Auto-punishment',
         target: `${target.user.tag} (${target.id})`,
-        moderator: 'Nina (auto)',
+        moderator: 'Skull (auto)',
         reason: `Reached ${total} warns`,
         extra: [{ name: 'Action', value: outcome, inline: true }],
       });

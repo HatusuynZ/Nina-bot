@@ -2,11 +2,11 @@ export default {
   name: 'hello',
   aliases: ['hi'],
   category: 'General',
-  description: 'Nina greets you',
+  description: 'Get Skull to answer',
   usage: '/hello',
   permission: null,
 
   async execute(ctx) {
-    await ctx.reply('Hey. I was waiting for you to talk to me. 🖤');
+    await ctx.reply('You needed something? Make it quick.');
   },
 };

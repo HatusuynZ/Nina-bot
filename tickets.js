@@ -90,7 +90,7 @@ export async function postTicketPanel(channel) {
     .setDescription(
       'Need to reach the staff? Pick a reason below.\n' +
         'I open a private channel only you and the staff can see.\n\n' +
-        "Don't open a ticket for no reason. I see everything. 🖤"
+        "Don't open a ticket for no reason. I read every one of them."
     );
 
   const menu = new StringSelectMenuBuilder()

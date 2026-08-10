@@ -105,7 +105,7 @@ export default {
       { name: '📨 How to apply', value: applyLine }
     );
 
-    embed.setFooter({ text: 'Numbers must be real. Botted stats get you denied. 🖤' });
+    embed.setFooter({ text: 'Numbers must be real. Botted stats get you denied. No exceptions.' });
 
     // parse: [] mostra o cargo com a cor, mas NAO pinga ninguem
     await ctx.reply({ embeds: [embed], allowedMentions: { parse: [] } });

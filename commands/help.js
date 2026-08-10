@@ -66,7 +66,7 @@ export default {
 
     const embed = new EmbedBuilder()
       .setColor(0x5865f2)
-      .setTitle('📖 Nina Commands')
+      .setTitle('📖 Skull — Commands')
       .setDescription(
         `Works with \`/\` or \`${prefix}\` · details on one: \`${prefix}help <command>\``
       );

@@ -14,7 +14,7 @@ export default {
       color: 0xe8534b,
       line: (a, b) => `${a} slapped ${b} 👋`,
       selfLine: (a) => `${a} slapped themselves. Bold move. 👋`,
-      botLine: (a) => `You raised a hand to me, ${a}? Bold. I'll remember that. 🔪`,
+      botLine: () => "You want to test me? Don't.",
     });
   },
 };

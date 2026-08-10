@@ -20,7 +20,7 @@ export default {
 
     const rows = await getLeaderboard(ctx.guild.id, 10);
     if (rows.length === 0) {
-      await ctx.reply('No one has any XP yet. Start talking. 🖤');
+      await ctx.reply('No one has any XP yet. Start talking.');
       return;
     }
 

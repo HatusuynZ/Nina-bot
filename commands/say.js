@@ -3,7 +3,7 @@ import { PermissionFlagsBits } from 'discord.js';
 export default {
   name: 'say',
   category: 'General',
-  description: 'Nina speaks for you',
+  description: 'Skull speaks for you',
   usage: '/say <text>',
   permission: PermissionFlagsBits.ManageMessages,
   options: [{ name: 'text', type: 'string', description: 'What she says', required: true }],
